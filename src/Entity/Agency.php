@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\AgencyRepository")
@@ -12,27 +13,32 @@ class Agency
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
+     * @Groups({"read"})
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"read"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"read"})
      */
     private $url;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Hotel", mappedBy="agency")
+     * @Groups({"read"})
      */
     private $hotels;
     
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Flight", mappedBy="agency")
+     * @Groups({"read"})
      */
     private $flights;
 
@@ -65,16 +71,20 @@ class Agency
         return $this;
     }
 
-    function getHotels() {
+    public function getHotels() {
         return $this->hotels;
     }
-    function getFlights() {
+    public function getFlights() {
         return $this->flights;
     }
-    function setHotels($hotels) {
+    public function setHotels($hotels) {
         $this->hotels = $hotels;
     }
-    function setFlights($flights) {
+    public function setFlights($flights) {
         $this->flights = $flights;
+    }
+
+    public function __toString() {
+        return $this->name;
     }
 }

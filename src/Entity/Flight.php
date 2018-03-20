@@ -3,22 +3,32 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\FlightRepository")
+ * @ApiResource(
+ *     collectionOperations={"get"={"method"="GET"}},
+ *     itemOperations={"get"={"method"="GET"}},
+ *     attributes={
+ *         "normalization_context"={"groups"={"read"}},
+ *         "denormalization_context"={"groups"={"write"}}
+ *     }
+ * )
  */
 class Flight
 {
     /**
      * @ORM\Id()
+     * @Groups({"read"})
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
      * @ORM\ManyToOne(targetEntity="App\Entity\Agency", inversedBy="flights")
+     * @Groups({"read"})
      * @ORM\JoinColumn(nullable=true)
      */
     private $agency;
@@ -30,46 +40,55 @@ class Flight
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"read"})
      */
     private $airline;
 
     /**
      * @ORM\Column(type="date")
+     * @Groups({"read"})
      */
     private $start;
 
     /**
      * @ORM\Column(type="date")
+     * @Groups({"read"})
      */
     private $end;
 
     /**
      * @ORM\Column(type="time")
+     * @Groups({"read"})
      */
     private $timeofday;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"read"})
      */
     private $duration;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"read"})
      */
     private $from_location;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"read"})
      */
     private $to_location;
 
     /**
      * @ORM\Column(type="decimal", scale=2)
+     * @Groups({"read"})
      */
     private $price;
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups({"read"})
      */
     private $owned;
 
@@ -78,12 +97,12 @@ class Flight
         return $this->id;
     }
 
-    public function getAgency(): ?int
+    public function getAgency()
     {
         return $this->agency;
     }
 
-    public function setAgency(int $agency): self
+    public function setAgency($agency): self
     {
         $this->agency = $agency;
 
@@ -208,5 +227,9 @@ class Flight
         $this->owned = $owned;
 
         return $this;
+    }
+
+    public function __toString() {
+        return $this->airline;
     }
 }

@@ -3,22 +3,33 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\HotelRepository")
+ * @ApiResource(
+ *     collectionOperations={"get"={"method"="GET"}},
+ *     itemOperations={"get"={"method"="GET"}},
+ *     attributes={
+ *         "normalization_context"={"groups"={"read"}},
+ *         "denormalization_context"={"groups"={"write"}}
+ *     }
+ * )
  */
 class Hotel
 {
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
+     * @Groups({"read"})
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
      * @ORM\ManyToOne(targetEntity="App\Entity\Agency", inversedBy="hotels")
+     * @Groups({"read"})
      * @ORM\JoinColumn(nullable=true)
      */
     private $agency;
@@ -30,36 +41,43 @@ class Hotel
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"read"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"read"})
      */
     private $location;
 
     /**
      * @ORM\Column(type="date")
+     * @Groups({"read"})
      */
     private $start;
 
     /**
      * @ORM\Column(type="date")
+     * @Groups({"read"})
      */
     private $end;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"read"})
      */
     private $stars;
 
     /**
      * @ORM\Column(type="decimal", scale=2)
+     * @Groups({"read"})
      */
     private $price;
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups({"read"})
      */
     private $owned;
 
@@ -68,12 +86,13 @@ class Hotel
         return $this->id;
     }
 
-    public function getAgency(): ?int
+    public function getAgency()
     {
         return $this->agency;
     }
+    
 
-    public function setAgency(int $agency): self
+    public function setAgency($agency): self
     {
         $this->agency = $agency;
 
@@ -174,5 +193,9 @@ class Hotel
         $this->owned = $owned;
 
         return $this;
+    }
+
+    public function __toString() {
+        return $this->name;
     }
 }
